@@ -1,57 +1,32 @@
-import express from "express";
+import express, { Application, Request, Response } from "express";
 import mongoose from "mongoose";
+import routes from "./routes";
+import connection from "./config/connection"; // This will initialize your DB connection
 
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Use environment variable for the connection string if available
-const connectionStringURI =
+const app: Application = express();
+const PORT: number | string = process.env.PORT || 3001;
+const MONGODB_URI: string =
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/socialNetworkDB";
 
 // Connect to MongoDB using Mongoose
-// mongoose.connect(connectionStringURI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-mongoose.connection.once("open", () => {
-  console.log("Connected to MongoDB");
-});
-
-// Middleware to parse JSON
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Sample Mongoose model for demonstration
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true, trim: true },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [/.+@.+\..+/, "Must be a valid email address!"],
-  },
-});
-const User = mongoose.model("User", userSchema);
-
-// Basic GET route
-app.get("/", (req, res) => {
+// A simple root route for testing
+app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the Social Network API");
 });
 
-// Sample POST route to create a new user
-app.post("/users", async (req, res) => {
-  try {
-    const newUser = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-    });
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-});
+// Mount the API routes
+app.use(routes);
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
