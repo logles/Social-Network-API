@@ -40,10 +40,16 @@ export const userController = {
   // PUT to update a user by ID
   updateUser(req: Request, res: Response): void {
     const { params, body } = req;
-    User.findOneAndUpdate({ _id: params.userId }, body, {
-      new: true,
-      runValidators: true,
-    })
+    User.findOneAndUpdate(
+      { _id: params.userId },
+      {
+        username: body.username,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
       .then((dbUserData) => {
         if (!dbUserData) {
           res.status(404).json({ message: "No user found with this id!" });
@@ -54,7 +60,7 @@ export const userController = {
       .catch((err: any) => res.status(400).json(err));
   },
 
-  // DELETE to remove a user by ID (and associated thoughts)
+  // // DELETE to remove a user by ID (and associated thoughts)
   deleteUser(req: Request, res: Response): void {
     const { params } = req;
     User.findOneAndDelete({ _id: params.userId })
