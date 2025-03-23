@@ -27,7 +27,7 @@
 
 This project is a RESTful API for a social network web application that allows users to share their thoughts, react to friends' posts, and manage a friend list. Leveraging MongoDB, Mongoose, and Express.js, the API efficiently handles large amounts of unstructured data. It supports full CRUD operations for users, thoughts, and reactions, making it a solid foundation for building social media applications.
 
-Video Walkthrough:
+Video Walkthrough: https://app.screencastify.com/v3/watch/fVdEZ5MvIFfl3VDoRZeY
 
 ## Usage
 
